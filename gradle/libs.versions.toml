@@ -1,0 +1,73 @@
+[versions]
+agp = "8.13.2"
+datastorePreferences = "1.2.0"
+kotlin = "2.1.10"
+coreKtx = "1.17.0"
+junit = "4.13.2"
+junitVersion = "1.3.0"
+espressoCore = "3.7.0"
+lifecycleRuntimeKtx = "2.10.0"
+activityCompose = "1.12.3"
+composeBom = "2026.01.01"
+datastorePreferencesCore = "1.2.0"
+koinVersion = "4.1.1"
+koinAnnotation = "2.3.1"
+navigation3Ui = "1.0.0"
+ksp = "2.1.10-1.0.30"
+material = "1.13.0"
+accompanistSystemuicontroller = "0.36.0"
+ktorVersion = "3.2.3"
+kotlinxSerializationJson = "1.9.0"
+playServicesBase = "18.10.0"
+foundation = "1.10.2"
+
+[libraries]
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+
+accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
+
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktorVersion" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorVersion" }
+ktor-client-websockets = { module = "io.ktor:ktor-client-websockets", version.ref = "ktorVersion" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktorVersion" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorVersion" }
+
+androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastorePreferencesCore" }
+
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinVersion" }
+koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koinAnnotation" }
+koin-ksp-compiler = { module = "io.insert-koin:koin-ksp-compiler", version.ref = "koinAnnotation" }
+koin-ksp-bom = { module = "io.insert-koin:koin-annotations-bom", version.ref = "koinAnnotation" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinVersion" }
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinVersion" }
+koin-androidx-compose-navigation = { module = "io.insert-koin:koin-androidx-compose-navigation", version.ref = "koinVersion" }
+
+androidx-navigation3-ui = { group = "androidx.navigation3", name = "navigation3-ui", version.ref = "navigation3Ui" }
+
+material = { module = "com.google.android.material:material", version.ref = "material" }
+play-services-base = { group = "com.google.android.gms", name = "play-services-base", version.ref = "playServicesBase" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+googleKsp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+
