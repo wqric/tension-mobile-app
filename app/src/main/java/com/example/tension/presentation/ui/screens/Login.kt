@@ -1,4 +1,4 @@
-package com.example.tension.presentation.ui
+package com.example.tension.presentation.ui.screens
 
 import android.util.Log
 import android.widget.Toast
@@ -10,13 +10,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -24,17 +20,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation3.runtime.NavBackStack
+import com.example.tension.presentation.ui.activities.MainRoute
+import com.example.tension.presentation.ui.activities.RegRoute
 import com.example.tension.presentation.ui.theme.Body
 import com.example.tension.presentation.ui.theme.Label
 import com.example.tension.presentation.ui.theme.LocalColors
 import com.example.tension.presentation.ui.theme.Screen
 import com.example.tension.presentation.ui.theme.Subtitle
-import com.example.tension.presentation.ui.theme.Title
 import com.example.tension.presentation.viewmodels.MainVM
 
 @Composable

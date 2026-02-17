@@ -5,22 +5,17 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.tension.data.MainRep
-import com.example.tension.data.UpdateProfileRQ
-import com.example.tension.data.User
-import com.example.tension.data.UserStats
-import com.example.tension.data.Workout
-import kotlinx.coroutines.delay
+import com.example.tension.domain.CommonUseCase
+import com.example.tension.presentation.models.User
+import com.example.tension.presentation.models.UserStats
+import com.example.tension.presentation.models.Workout
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.koin.android.annotation.KoinViewModel
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import kotlin.fold
 
 
 @KoinViewModel
-class MainVM(private val rep: MainRep) : ViewModel() {
+class MainVM(private val useCase: CommonUseCase) : ViewModel() {
     val user = mutableStateOf<User?>(null)
     val emailState = mutableStateOf("")
     val passwordState = mutableStateOf("")
@@ -47,14 +42,13 @@ class MainVM(private val rep: MainRep) : ViewModel() {
         aim: Int,
         difficult: Int
     ) = viewModelScope.launch {
-        val res = rep.updateProfile(
-            UpdateProfileRQ(
+        val res = useCase.updateProfile(
+
                 name = name,
                 weight = weight.toFloat(),
                 height = height.toFloat(),
                 aim = aim,
                 difficult = difficult
-            )
         )
 
         res.fold(
@@ -70,11 +64,11 @@ class MainVM(private val rep: MainRep) : ViewModel() {
 
     fun logout() = viewModelScope.launch {
         user.value = null
-        rep.forgetToken()
+        useCase.logout()
     }
 
     fun getData() = viewModelScope.launch {
-        val stats = rep.getUserStats()
+        val stats = useCase.getUserStats()
         stats.fold(
             onSuccess = {
                 userStats.value = it
@@ -84,7 +78,7 @@ class MainVM(private val rep: MainRep) : ViewModel() {
                 Log.d("er", it.toString())
             }
         )
-        val workouts = rep.getMyWorkouts()
+        val workouts = useCase.getUserWorkouts()
         workouts.fold(
             onSuccess = {
                 userWorkouts.value = it
@@ -99,16 +93,13 @@ class MainVM(private val rep: MainRep) : ViewModel() {
     fun completeCurrentWorkout() = viewModelScope.launch {
         val workout = currentWorkout.value ?: return@launch
 
-        val res = rep.markWorkoutDone(
+        val res = useCase.markWorkoutDone(
             workout.id,
             workout.date.take(10)
         )
-
-        Log.d("click", "clicked")
         res.fold(
             onSuccess = {
                 Log.d("user", it.toString())
-                // Обновляем список userWorkouts
                 userWorkouts.value = userWorkouts.value?.map { w ->
                     if (w.id == workout.id) {
                         w.copy(isDone = true)
@@ -124,11 +115,10 @@ class MainVM(private val rep: MainRep) : ViewModel() {
     }
 
     fun getProfile() = viewModelScope.launch {
-        val res = rep.getProfile()
+        val res = useCase.getProfile()
         res.fold(
             onSuccess = {
                 user.value = it
-                rep.setToken(it.token)
                 Log.d("user", it.toString())
             },
             onFailure = {
@@ -138,11 +128,10 @@ class MainVM(private val rep: MainRep) : ViewModel() {
     }
 
     fun reg() = viewModelScope.launch {
-        val res = rep.register(emailState.value, passwordState.value)
+        val res = useCase.register(emailState.value, passwordState.value)
         res.fold(
             onSuccess = {
                 user.value = it
-                rep.setToken(it.token)
                 getData()
                 Log.d("user", it.toString())
             },
@@ -154,11 +143,10 @@ class MainVM(private val rep: MainRep) : ViewModel() {
     }
 
     fun login() = viewModelScope.launch {
-        val res = rep.login(emailState.value, passwordState.value)
+        val res = useCase.login(emailState.value, passwordState.value)
         res.fold(
             onSuccess = {
                 user.value = it
-                rep.setToken(it.token)
                 getData()
                 Log.d("user", it.toString())
             },

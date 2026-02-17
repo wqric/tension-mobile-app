@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.ApplicationExtension
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -6,7 +8,7 @@ plugins {
     alias(libs.plugins.serialization)
 }
 
-android {
+configure<ApplicationExtension> {
     namespace = "com.example.tension"
     compileSdk = 36
 
@@ -30,16 +32,16 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
 
-    }
-    kotlin {
-        jvmToolchain(11)
     }
     buildFeatures {
         compose = true
     }
+}
+kotlin {
+    jvmToolchain(21)
 }
 
 dependencies {

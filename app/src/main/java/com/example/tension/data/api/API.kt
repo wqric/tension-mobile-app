@@ -1,5 +1,9 @@
-package com.example.tension.data
+package com.example.tension.data.api
 
+import com.example.tension.presentation.models.MessageResponse
+import com.example.tension.presentation.models.User
+import com.example.tension.presentation.models.UserStats
+import com.example.tension.presentation.models.Workout
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.bearerAuth
@@ -12,9 +16,12 @@ import io.ktor.http.contentType
 import org.koin.core.annotation.Single
 
 @Single
-class Api(private val client: HttpClient) {
-    private val BASE_URL = "http://85.198.83.158:8080"
+class API(private val client: HttpClient) {
+    companion object {
+        const val BASE_URL = "http://85.198.83.158:8080"
+    }
 
+    // Войти в аккаунт
     suspend fun login(req: LoginRQ): User {
         return client.post("$BASE_URL/login") {
             contentType(ContentType.Application.Json)
@@ -22,6 +29,8 @@ class Api(private val client: HttpClient) {
         }.body<User>()
     }
 
+
+    // Создаьб аккаунт
     suspend fun register(req: RegistrationRQ): User {
         return client.post("$BASE_URL/register") {
             contentType(ContentType.Application.Json)
@@ -48,32 +57,32 @@ class Api(private val client: HttpClient) {
     // --- ТРЕНИРОВКИ ---
 
     // Получить список всех назначенных тренировок
-    suspend fun getMyWorkouts(token: String): List<Workout> {
+    suspend fun getUserWorkouts(token: String): List<Workout> {
         return client.get("$BASE_URL/api/workouts") {
             bearerAuth(token)
         }.body<List<Workout>>()
     }
 
+    // Получить статистику пользователя
     suspend fun getUserStats(token: String): UserStats {
         return client.get("$BASE_URL/api/stats") {
             bearerAuth(token)
         }.body<UserStats>()
     }
 
-    // Сгенерировать новый план (POST)
+    // Сгенерировать новый план трениовок
     suspend fun generateWorkoutPlan(token: String): List<Workout> {
         return client.post("$BASE_URL/api/workouts/generate") {
             bearerAuth(token)
         }.body<List<Workout>>()
     }
 
-    // Пометить тренировку выполненной (PATCH)
-    suspend fun markWorkoutDone(token: String, workoutId: Int, date: String): WorkoutCompleteResponse {
+    // Пометить тренировку выполненной
+    suspend fun markWorkoutDone(token: String, workoutId: Int, date: String): MessageResponse {
         return client.patch("$BASE_URL/api/workouts/complete") {
             contentType(ContentType.Application.Json)
             bearerAuth(token)
-            // Создаем анонимный объект для Body, если нет отдельного класса
             setBody(MarkWorkoutDoneRQ(workoutId, date))
-        }.body<WorkoutCompleteResponse>()
+        }.body<MessageResponse>()
     }
 }

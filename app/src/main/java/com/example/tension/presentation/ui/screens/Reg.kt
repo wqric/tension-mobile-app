@@ -1,4 +1,4 @@
-package com.example.tension.presentation.ui
+package com.example.tension.presentation.ui.screens
 
 import android.util.Log
 import android.widget.Toast
@@ -23,6 +23,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.tension.presentation.ui.activities.LoginRoute
+import com.example.tension.presentation.ui.activities.MainRoute
 import com.example.tension.presentation.ui.theme.Body
 import com.example.tension.presentation.ui.theme.Label
 import com.example.tension.presentation.ui.theme.LocalColors

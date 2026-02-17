@@ -15,7 +15,7 @@
         android:theme="@style/Theme.Tension">
 
         <activity
-            android:name=".presentation.ui.MainActivity"
+            android:name=".presentation.ui.activities.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Tension">

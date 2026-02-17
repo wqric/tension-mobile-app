@@ -1,4 +1,4 @@
-package com.example.tension.data
+package com.example.tension.presentation.models
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -9,9 +9,7 @@ enum class Difficulty(val value: Int, val text: String) {
     INTERMEDIATE(1, "Средний уровень"),
     ADVANCED(2, "Продвинутый");
 
-    companion object {
-        fun fromInt(id: Int) = entries.find { it.value == id } ?: BEGINNER
-    }
+
 }
 
 enum class Aim(val value: Int, val text: String) {
@@ -19,17 +17,15 @@ enum class Aim(val value: Int, val text: String) {
     MASS(1, "Набор массы"),
     MAINTENANCE(2, "Поддержание формы");
 
-    companion object {
-        fun fromInt(id: Int) = entries.find { it.value == id } ?: MAINTENANCE
-    }
+
 }
 
 @Serializable
 data class User(
     val email: String,
     val name: String,
-    val aim: Int,         // Цель: 0 - Похудение, 1 - Масса и т.д.
-    val difficult: Int,   // Сложность: 0 - Новичок, 1 - Продвинутый
+    val aim: Int,
+    val difficult: Int,
     val weight: Double,
     val height: Double,
     val token: String
@@ -58,34 +54,9 @@ data class Workout(
     val exercises: List<Exercise>? = emptyList()
 )
 
-@Serializable
-data class RegistrationRQ(
-    val email: String,
-    val password: String,
-)
 
-@Serializable
-data class LoginRQ(
-    val email: String,
-    val password: String
-)
 
-@Serializable
-data class UpdateProfileRQ(
-    val name: String? = null,
-    val lastname: String? = null,
-    val weight: Float? = null,
-    val height: Float? = null,
-    val aim: Int? = null,
-    val difficult: Int? = null
-)
 
-@Serializable
-data class MarkWorkoutDoneRQ(
-    @SerialName("workout_id")
-    val workoutId: Int,
-    val date: String
-)
 
 @Serializable
 data class UserStats(
@@ -95,14 +66,5 @@ data class UserStats(
     @SerialName("current_streak") val currentStreak: Int,
     @SerialName("favorite_workout") val favoriteWorkout: String
 )
-
-@Serializable
-data class WorkoutCompleteResponse(
-    val message: String,
-    val status: String? = null,
-    @SerialName("workout_id")
-    val workoutID: Int
-)
-
 @Serializable
 data class MessageResponse(val message: String, val status: String? = null)

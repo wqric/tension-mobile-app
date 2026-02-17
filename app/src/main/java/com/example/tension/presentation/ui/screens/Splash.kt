@@ -1,6 +1,5 @@
-package com.example.tension.presentation.ui
+package com.example.tension.presentation.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,10 +14,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation3.runtime.NavBackStack
 import com.example.tension.R
+import com.example.tension.presentation.ui.activities.LoginRoute
+import com.example.tension.presentation.ui.activities.MainRoute
 import com.example.tension.presentation.ui.theme.LocalColors
-import com.example.tension.presentation.ui.theme.Screen
 import com.example.tension.presentation.ui.theme.Title
 import com.example.tension.presentation.viewmodels.MainVM
 import kotlinx.coroutines.delay

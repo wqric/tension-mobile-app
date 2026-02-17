@@ -1,4 +1,4 @@
-package com.example.tension.presentation.ui
+package com.example.tension.presentation.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -30,31 +29,43 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.PopupProperties
+import com.example.tension.presentation.ui.activities.LoginRoute
+import com.example.tension.presentation.ui.activities.MainRoute
 import com.example.tension.presentation.ui.theme.Body
 import com.example.tension.presentation.ui.theme.LocalColors
 import com.example.tension.presentation.ui.theme.Screen
 import com.example.tension.presentation.ui.theme.Subtitle
 import com.example.tension.presentation.viewmodels.MainVM
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
     val colors = LocalColors.current
     var isEditing by remember { mutableStateOf(false) }
+    var isMenuExpanded by remember { mutableStateOf(false) }
+
 
     // Состояния для редактирования
     var name by remember { mutableStateOf(vm.user.value?.name ?: "") }
@@ -150,7 +161,9 @@ fun ProfileScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                     title = "Имя",
                     value = name,
                     isEditing = isEditing,
-                    onValueChange = { name = it }
+                    onValueChange = { name = it },
+                    keyboardType = KeyboardType.Text,
+                    enabled = !isMenuExpanded
                 )
 
                 MyDivider(color = colors.backgroundPrimary, thickness = 1.dp)
@@ -161,10 +174,11 @@ fun ProfileScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                     value = weight,
                     isEditing = isEditing,
                     onValueChange = { weight = it },
-                    keyboardType = KeyboardType.Number
+                    keyboardType = KeyboardType.Number,
+                    enabled = !isMenuExpanded
                 )
 
-                Divider(color = colors.backgroundPrimary, thickness = 1.dp)
+                MyDivider(color = colors.backgroundPrimary, thickness = 1.dp)
 
                 // Рост
                 ProfileField(
@@ -172,7 +186,8 @@ fun ProfileScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                     value = height,
                     isEditing = isEditing,
                     onValueChange = { height = it },
-                    keyboardType = KeyboardType.Number
+                    keyboardType = KeyboardType.Number,
+                    enabled = !isMenuExpanded
                 )
 
                 MyDivider(color = colors.backgroundPrimary, thickness = 1.dp)
@@ -183,7 +198,7 @@ fun ProfileScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                     options = listOf("Похудение", "Набор массы", "Поддержание формы"),
                     selectedIndex = aim,
                     isEditing = isEditing,
-                    onSelectionChange = { aim = it }
+                    onSelectionChange = { aim = it },
                 )
 
                 MyDivider(color = colors.backgroundPrimary, thickness = 1.dp)
@@ -194,7 +209,7 @@ fun ProfileScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                     options = listOf("Новичок", "Продвинутый", "Профессионал"),
                     selectedIndex = difficult,
                     isEditing = isEditing,
-                    onSelectionChange = { difficult = it }
+                    onSelectionChange = { difficult = it },
                 )
             }
 
@@ -278,7 +293,8 @@ fun ProfileField(
     value: String,
     isEditing: Boolean,
     onValueChange: (String) -> Unit,
-    keyboardType: KeyboardType = KeyboardType.Text
+    keyboardType: KeyboardType = KeyboardType.Text,
+    enabled: Boolean = true,
 ) {
     val colors = LocalColors.current
 
@@ -298,7 +314,11 @@ fun ProfileField(
                     color = colors.textPrimary,
                     textAlign = TextAlign.End
                 ),
-                keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+                enabled = enabled,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = keyboardType,
+                    imeAction = androidx.compose.ui.text.input.ImeAction.Done
+                ),
                 singleLine = true,
                 modifier = Modifier
                     .width(150.dp)
@@ -336,7 +356,7 @@ fun ProfileDropdownField(
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
                         .background(colors.backgroundPrimary)
-                        .clickable { expanded = true }
+                        .clickable { expanded = true  }
                         .padding(horizontal = 12.dp, vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -352,6 +372,7 @@ fun ProfileDropdownField(
                 DropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
+                    properties = PopupProperties(focusable = false),
                     modifier = Modifier.background(colors.backgroundSecondary)
                 ) {
                     options.forEachIndexed { index, option ->
@@ -372,7 +393,7 @@ fun ProfileDropdownField(
 }
 
 @Composable
-fun MyDivider(color: androidx.compose.ui.graphics.Color, thickness: Dp) {
+fun MyDivider(color: Color, thickness: Dp) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
