@@ -52,6 +52,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tension.R
+import com.example.tension.presentation.ui.activities.ChatRoute
 import com.example.tension.presentation.ui.activities.ProfileRoute
 import com.example.tension.presentation.ui.theme.Body
 import com.example.tension.presentation.ui.theme.Label
@@ -62,6 +63,7 @@ import com.example.tension.presentation.viewmodels.MainVM
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
+
 
 
 @Composable
@@ -307,7 +309,7 @@ fun MainScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                             .clip(RoundedCornerShape(12.dp))
                             .background(colors.backgroundSecondary)
                             .fillMaxWidth()
-                            .height(300.dp)
+                            .height(232.dp)
                     ) {
                         Spacer(modifier = Modifier.height(12.dp))
                         StatRow(vm.userStats.value?.totalWorkouts ?: 0, "Всего тренировок", "за все вермя")
@@ -325,16 +327,47 @@ fun MainScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                             isPer = true
                         )
                         Spacer(modifier = Modifier.height(12.dp))
-                        StatRow(
-                            vm.userStats.value?.currentStreak ?: 0,
-                            "Текущая серия",
-                            "тренировок без пропусков"
-                        )
-                        Spacer(modifier = Modifier.height(12.dp))
                     }
 
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(28.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(50.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(colors.textPrimary)
+                                .clickable(
+                                    indication = null,
+                                    interactionSource = remember { MutableInteractionSource() }
+                                ) {
+                                    backStack.add(ChatRoute)
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.chat),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(20.dp),
+                                    tint = colors.special
+                                )
+                                Label("AI Помощник", color = colors.backgroundPrimary)
+                            }
+                        }
+                    }
                 }
+
+
+                Spacer(modifier = Modifier.height(12.dp))
             }
 
             Spacer(Modifier.weight(1f))

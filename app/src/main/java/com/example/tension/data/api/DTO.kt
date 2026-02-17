@@ -37,4 +37,10 @@ data class WorkoutCompleteResponse(
     @SerialName("workout_id")
     val workoutID: Int
 )
+@Serializable
+data class AgentCallRQ(
+    val message: String,
+    @SerialName("parent_message_id")
+    val parentMessageId: String? = null
+)
 

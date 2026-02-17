@@ -5,17 +5,23 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.tension.domain.AiAgentUseCase
 import com.example.tension.domain.CommonUseCase
+import com.example.tension.presentation.models.ChatUiMessage
 import com.example.tension.presentation.models.User
 import com.example.tension.presentation.models.UserStats
 import com.example.tension.presentation.models.Workout
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 import java.time.LocalDate
 
 
 @KoinViewModel
-class MainVM(private val useCase: CommonUseCase) : ViewModel() {
+class MainVM(private val useCase: CommonUseCase, private val aiUseCase: AiAgentUseCase) : ViewModel() {
     val user = mutableStateOf<User?>(null)
     val emailState = mutableStateOf("")
     val passwordState = mutableStateOf("")
@@ -24,7 +30,7 @@ class MainVM(private val useCase: CommonUseCase) : ViewModel() {
     val userWorkouts = mutableStateOf<List<Workout>?>(null)
 
     val currentWorkout = derivedStateOf {
-        val todayString = LocalDate.now().toString() // "2026-02-08"
+        val todayString = LocalDate.now().toString()
         userWorkouts.value?.find { workout ->
             workout.date.take(10) == todayString
         }
@@ -35,6 +41,44 @@ class MainVM(private val useCase: CommonUseCase) : ViewModel() {
         getProfile()
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        clearChat()
+    }
+
+    private val _messages = MutableStateFlow<List<ChatUiMessage>>(emptyList())
+    val messages: StateFlow<List<ChatUiMessage>> = _messages.asStateFlow()
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+    /**
+     * Отправка сообщения пользователем
+     */
+    fun sendMessage(text: String) {
+        if (text.isBlank()) return
+        val userMsg = ChatUiMessage(text = text, isUser = true)
+        _messages.update { it + userMsg }
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = aiUseCase.execute(text)
+
+            result.onSuccess { botAnswer ->
+                val botMsg = ChatUiMessage(text = botAnswer, isUser = false)
+                _messages.update { it + botMsg }
+            }.onFailure { error ->
+                emailState.value = error.message ?: "Неизвестная ошибка"
+            }
+
+            _isLoading.value = false
+        }
+    }
+
+    fun clearChat() = viewModelScope.launch {
+        aiUseCase.resetChat()
+        _messages.value = emptyList()
+    }
+
+
     fun updateUser(
         name: String,
         weight: Double,
@@ -44,11 +88,11 @@ class MainVM(private val useCase: CommonUseCase) : ViewModel() {
     ) = viewModelScope.launch {
         val res = useCase.updateProfile(
 
-                name = name,
-                weight = weight.toFloat(),
-                height = height.toFloat(),
-                aim = aim,
-                difficult = difficult
+            name = name,
+            weight = weight.toFloat(),
+            height = height.toFloat(),
+            aim = aim,
+            difficult = difficult
         )
 
         res.fold(

@@ -68,3 +68,9 @@ data class UserStats(
 )
 @Serializable
 data class MessageResponse(val message: String, val status: String? = null)
+
+data class ChatUiMessage(
+    val text: String,
+    val isUser: Boolean,
+    val timestamp: Long = System.currentTimeMillis()
+)

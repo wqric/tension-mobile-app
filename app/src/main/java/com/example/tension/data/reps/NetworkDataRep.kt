@@ -1,9 +1,12 @@
 package com.example.tension.data.reps
 
+import com.example.tension.data.api.AiAPI
 import com.example.tension.data.api.API
+import com.example.tension.data.api.AgentCallRQ
 import com.example.tension.data.api.LoginRQ
 import com.example.tension.data.api.RegistrationRQ
 import com.example.tension.data.api.UpdateProfileRQ
+import com.example.tension.domain.AgentCallRS
 import com.example.tension.presentation.models.MessageResponse
 import com.example.tension.presentation.models.User
 import com.example.tension.presentation.models.UserStats
@@ -12,7 +15,7 @@ import io.ktor.client.plugins.ResponseException
 import org.koin.core.annotation.Single
 
 @Single
-class NetworkDataRep(private val api: API) {
+class NetworkDataRep(private val api: API, private val aiApi: AiAPI) {
     suspend fun login(email: String, password: String): Result<User> {
         val req = LoginRQ(email = email, password = password)
         return safeCall { api.login(req) }
@@ -60,6 +63,14 @@ class NetworkDataRep(private val api: API) {
 
     suspend fun markWorkoutDone(token: String,workoutId: Int, date: String): Result<MessageResponse> {
         return safeCall { api.markWorkoutDone(token, workoutId, date) }
+    }
+
+    suspend fun callAgent(message: String, parentMessageId: String?): Result<AgentCallRS>{
+        val req = AgentCallRQ(
+            message = message,
+            parentMessageId = parentMessageId
+        )
+        return safeCall { aiApi.callAgent(req) }
     }
 
     private suspend fun <T> safeCall(block: suspend () -> T): Result<T> {

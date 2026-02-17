@@ -39,12 +39,11 @@ fun RegScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
     }
     val colors = LocalColors.current
     Screen {
-        Spacer(Modifier.height(50.dp))
+        Spacer(Modifier.height(80.dp))
         if (vm.errorState.value != "") {
             Toast.makeText(LocalContext.current, vm.errorState.value, Toast.LENGTH_SHORT).show()
             vm.errorState.value = ""
         }
-        Spacer(Modifier.height(30.dp))
         Subtitle("Добро пожаловать!")
         Spacer(Modifier.height(10.dp))
         Body("Введите ваши данные", color = colors.textSecondary)

@@ -71,9 +71,11 @@ class CommonUseCase(
         return networkDataRep.generateWorkouts(token)
     }
 
-
     suspend fun markWorkoutDone(workoutId: Int, date: String): Result<MessageResponse> {
         val token = internalDataRep.getToken()
         return networkDataRep.markWorkoutDone(token, workoutId, date)
     }
+
+
 }
+

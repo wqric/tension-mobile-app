@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
+import com.example.tension.presentation.ui.ChatScreen
 import com.example.tension.presentation.ui.screens.LoginScreen
 import com.example.tension.presentation.ui.screens.MainScreen
 import com.example.tension.presentation.ui.screens.ProfileScreen
@@ -28,11 +29,12 @@ object LoginRoute
 object RegRoute
 object SplashRoute
 object ProfileRoute
+object ChatRoute
 object SettingsRoute
 
 class MainActivity : ComponentActivity() {
+    val vm: MainVM by viewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
-        val vm: MainVM by viewModel()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
@@ -47,6 +49,9 @@ class MainActivity : ComponentActivity() {
                             when (key) {
                                 is MainRoute -> NavEntry(key) {
                                     MainScreen(vm, backstack)
+                                }
+                                is ChatRoute -> NavEntry(key) {
+                                    ChatScreen(vm, backstack)
                                 }
                                 is SplashRoute -> NavEntry(key) {
                                     SplashScreen(vm, backstack)
@@ -67,6 +72,11 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        vm.clearChat()
     }
 }
 
