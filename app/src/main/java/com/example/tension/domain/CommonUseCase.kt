@@ -75,7 +75,5 @@ class CommonUseCase(
         val token = internalDataRep.getToken()
         return networkDataRep.markWorkoutDone(token, workoutId, date)
     }
-
-
 }
 

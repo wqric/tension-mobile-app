@@ -2,7 +2,10 @@ package com.example.tension.presentation.viewmodels
 
 import android.util.Log
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tension.domain.AiAgentUseCase
@@ -28,6 +31,8 @@ class MainVM(private val useCase: CommonUseCase, private val aiUseCase: AiAgentU
     val passwordRepeatState = mutableStateOf("")
     val userStats = mutableStateOf<UserStats?>(null)
     val userWorkouts = mutableStateOf<List<Workout>?>(null)
+
+    var isNewChat by mutableStateOf(true)
 
     val currentWorkout = derivedStateOf {
         val todayString = LocalDate.now().toString()

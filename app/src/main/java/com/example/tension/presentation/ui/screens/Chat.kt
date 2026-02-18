@@ -1,11 +1,6 @@
-package com.example.tension.presentation.ui
+package com.example.tension.presentation.ui.screens
 
 import android.widget.Toast
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -27,8 +22,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -41,9 +34,11 @@ import com.example.tension.presentation.ui.theme.Body
 import com.example.tension.presentation.ui.theme.Label
 import com.example.tension.presentation.ui.theme.LocalColors
 import com.example.tension.presentation.ui.theme.Screen
-import com.example.tension.presentation.ui.theme.Subtitle
 import com.example.tension.presentation.viewmodels.MainVM
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun ChatScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
@@ -52,7 +47,6 @@ fun ChatScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
     val isLoading by vm.isLoading.collectAsState()
 
     var messageText by remember { mutableStateOf("") }
-    var isNewChat by remember { mutableStateOf(true) }
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -73,204 +67,247 @@ fun ChatScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                 .fillMaxSize()
                 .padding(horizontal = 24.dp)
         ) {
-            Spacer(Modifier.height(50.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Spacer(modifier = Modifier.weight(1f))
-                Icon(
-                    painter = painterResource(R.drawable.arrow_down),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(36.dp)
-                        .rotate(180f)
-                        .clickable(
-                            indication = null,
-                            interactionSource = remember { MutableInteractionSource() }
-                        ) {
-                            backStack.add(MainRoute)
-                        }
-                )
-                Spacer(modifier = Modifier.weight(1f))
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Spacer(modifier = Modifier.weight(1f))
-                Subtitle("AI Ассистент")
-                Spacer(modifier = Modifier.weight(1f))
-            }
-
-            // Список сообщений
-            if (messages.isEmpty()) {
-                // Пустое состояние
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
+            Box {
+                Column {
+                    if (messages.isEmpty()) {
                         Box(
                             modifier = Modifier
-                                .size(80.dp)
-                                .clip(CircleShape)
-                                .background(colors.special),
+                                .weight(1f)
+                                .fillMaxWidth(),
                             contentAlignment = Alignment.Center
                         ) {
-                            Icon(
-                                painter = painterResource(R.drawable.chat), // добавьте иконку
-                                contentDescription = null,
-                                modifier = Modifier.size(40.dp),
-                                tint = colors.textPrimary
-                            )
-                        }
-                        Body("Начните диалог с AI ассистентом")
-                        Label(
-                            "Задавайте вопросы о тренировках",
-                            color = colors.textSecondary
-                        )
-                    }
-                }
-            } else {
-                LazyColumn(
-                    state = listState,
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    contentPadding = PaddingValues(vertical = 8.dp)
-                ) {
-                    items(messages) { message ->
-                        MessageBubble(
-                            message = message
-                        )
-                    }
-
-                    if (isLoading) {
-                        item {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp),
-                                horizontalArrangement = Arrangement.Start
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
                                 Box(
                                     modifier = Modifier
-                                        .clip(RoundedCornerShape(16.dp))
-                                        .background(colors.backgroundSecondary)
-                                        .padding(16.dp)
+                                        .size(80.dp)
+                                        .clip(CircleShape)
+                                        .background(colors.special),
+                                    contentAlignment = Alignment.Center
                                 ) {
-                                    CircularProgressIndicator(
-                                        modifier = Modifier.size(20.dp),
-                                        color = colors.textPrimary,
-                                        strokeWidth = 2.dp
+                                    Icon(
+                                        painter = painterResource(R.drawable.chat),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(40.dp),
+                                        tint = colors.textPrimary
                                     )
+                                }
+                                Body("Начните диалог с AI ассистентом")
+                                Label(
+                                    "Задавайте вопросы о тренировках",
+                                    color = colors.textSecondary
+                                )
+                            }
+                        }
+                    } else {
+                        LazyColumn(
+                            state = listState,
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            contentPadding = PaddingValues(bottom = 180.dp, top = 160.dp)
+                        ) {
+                            items(messages) { message ->
+
+                                MessageBubble(
+                                    message = message
+                                )
+                            }
+
+                            if (isLoading) {
+                                item {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(8.dp),
+                                        horizontalArrangement = Arrangement.Start
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .clip(RoundedCornerShape(16.dp))
+                                                .background(colors.backgroundSecondary)
+                                                .padding(16.dp)
+                                        ) {
+                                            CircularProgressIndicator(
+                                                modifier = Modifier.size(20.dp),
+                                                color = colors.textPrimary,
+                                                strokeWidth = 2.dp
+                                            )
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
-
-            Spacer(Modifier.height(12.dp))
-            Row {
-                Spacer(modifier = Modifier.weight(1f))
-                Text(
-                    text = "новый чат",
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        color = colors.textSecondary,
-                        fontSize = 18.sp
-                    ),
-                    modifier = Modifier.clickable(
-                        enabled = !isNewChat && !isLoading,
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
+                Column {
+                    Spacer(Modifier.height(50.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 24.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        vm.clearChat()
-                        isNewChat = true
-                    }
-                )
-                Spacer(modifier = Modifier.weight(1f))
-            }
-            Spacer(modifier = Modifier.height(12.dp))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 24.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-
-                BasicTextField(
-                    value = messageText,
-                    onValueChange = { messageText = it },
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(60.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(colors.backgroundSecondary)
-                        .padding(horizontal = 20.dp, vertical = 14.dp),
-                    textStyle = MaterialTheme.typography.bodyMedium.copy(
-                        color = colors.textPrimary,
-                        fontSize = 16.sp
-                    ),
-                    decorationBox = { innerTextField ->
-                        if (messageText.isEmpty()) {
-                            Column(
-                                verticalArrangement = Arrangement.SpaceAround
-                            ) {
-                                Text(
-                                    text = "Введите сообщение...",
-                                    style = MaterialTheme.typography.bodyMedium.copy(
-                                        color = colors.textSecondary,
-                                        fontSize = 16.sp
-                                    )
+                        Box(
+                            modifier = Modifier
+                                .size(50.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(
+                                    if (messageText.isNotBlank() && !isLoading) colors.special
+                                    else colors.backgroundSecondary
                                 )
-                            }
-
+                                .clickable(enabled = messageText.isNotBlank() && !isLoading) {
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.arrow_down),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(36.dp)
+                                    .rotate(90f)
+                                    .clickable(
+                                        indication = null,
+                                        interactionSource = remember { MutableInteractionSource() }
+                                    ) {
+                                        backStack.add(MainRoute)
+                                    }
+                            )
                         }
-                        innerTextField()
-                    }
-                )
+                        Box(modifier = Modifier
+                            .weight(1f)
+                            .height(70.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(colors.backgroundSecondary)
+                            .padding(horizontal = 20.dp, vertical = 14.dp),
+                            contentAlignment = Alignment.Center) {
+                            Text(
+                                text = "AI ассистент",
+                                style = MaterialTheme.typography.titleMedium.copy(fontSize = 30.sp),
+                                textAlign = TextAlign.Center
+                            )
+                        }
 
-                Box(
-                    modifier = Modifier
-                        .size(50.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(
-                            if (messageText.isNotBlank() && !isLoading) colors.special
-                            else colors.backgroundSecondary
+
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 4.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                }
+
+
+                Column {
+                    Spacer(Modifier.weight(1f))
+                    Row {
+                        Spacer(modifier = Modifier.weight(1f))
+                        Text(
+                            text = "новый чат",
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                color = colors.textSecondary,
+                                fontSize = 18.sp
+                            ),
+                            modifier = Modifier.clickable(
+                                enabled = !vm.isNewChat && !isLoading,
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) {
+                                vm.clearChat()
+                                vm.isNewChat = true
+                            }
                         )
-                        .clickable(enabled = messageText.isNotBlank() && !isLoading) {
-                            vm.sendMessage(messageText)
-                            messageText = ""
-                            isNewChat = false
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.send),
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp),
-                        tint = if (messageText.isNotBlank() && !isLoading) colors.textPrimary
-                        else colors.textSecondary
-                    )
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 24.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+
+                        BasicTextField(
+                            value = messageText,
+                            onValueChange = { messageText = it },
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(60.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(colors.backgroundSecondary)
+                                .padding(horizontal = 20.dp, vertical = 14.dp),
+                            textStyle = MaterialTheme.typography.bodyMedium.copy(
+                                color = colors.textPrimary,
+                                fontSize = 16.sp
+                            ),
+                            decorationBox = { innerTextField ->
+                                if (messageText.isEmpty()) {
+                                    Column(
+                                        verticalArrangement = Arrangement.SpaceAround
+                                    ) {
+                                        Text(
+                                            text = "Введите сообщение...",
+                                            style = MaterialTheme.typography.bodyMedium.copy(
+                                                color = colors.textSecondary,
+                                                fontSize = 16.sp
+                                            )
+                                        )
+                                    }
+
+                                }
+                                innerTextField()
+                            }
+                        )
+
+                        Box(
+                            modifier = Modifier
+                                .size(50.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(
+                                    if (messageText.isNotBlank() && !isLoading) colors.special
+                                    else colors.backgroundSecondary
+                                )
+                                .clickable(enabled = messageText.isNotBlank() && !isLoading) {
+                                    vm.sendMessage(messageText)
+                                    messageText = ""
+                                    vm.isNewChat = false
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.send),
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp),
+                                tint = if (messageText.isNotBlank() && !isLoading) colors.textPrimary
+                                else colors.textSecondary
+                            )
+                        }
+                    }
+                    Spacer(Modifier.height(40.dp))
                 }
             }
-            Spacer(Modifier.height(40.dp))
         }
     }
 }
@@ -326,7 +363,7 @@ fun MessageBubble(
 
 
 fun formatTimestamp(timestamp: Long): String {
-    val date = java.util.Date(timestamp)
-    val format = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
+    val date = Date(timestamp)
+    val format = SimpleDateFormat("HH:mm", Locale.getDefault())
     return format.format(date)
 }

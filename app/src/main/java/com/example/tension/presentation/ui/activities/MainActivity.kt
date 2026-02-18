@@ -11,7 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
-import com.example.tension.presentation.ui.ChatScreen
+import com.example.tension.presentation.ui.screens.ChatScreen
 import com.example.tension.presentation.ui.screens.LoginScreen
 import com.example.tension.presentation.ui.screens.MainScreen
 import com.example.tension.presentation.ui.screens.ProfileScreen
