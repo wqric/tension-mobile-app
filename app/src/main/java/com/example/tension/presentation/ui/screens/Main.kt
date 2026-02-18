@@ -65,7 +65,6 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 
-
 @Composable
 fun MainScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
     var isExpanded by remember { mutableStateOf(false) }
@@ -142,7 +141,7 @@ fun MainScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                                     .size(30.dp)
                                     .clickable(
                                         indication = null,
-                                        interactionSource =  remember { MutableInteractionSource() }
+                                        interactionSource = remember { MutableInteractionSource() }
                                     ) {
 
                                     }
@@ -156,7 +155,7 @@ fun MainScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                                     .size(30.dp)
                                     .clickable(
                                         indication = null,
-                                        interactionSource =  remember { MutableInteractionSource() }
+                                        interactionSource = remember { MutableInteractionSource() }
                                     ) {
                                         backStack.add(ProfileRoute)
                                     }
@@ -234,16 +233,24 @@ fun MainScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                                             )
                                             Spacer(Modifier.height(12.dp))
 
-                                            Body("Упражнения:", modifier = Modifier.padding(bottom = 8.dp))
+                                            Body(
+                                                "Упражнения:",
+                                                modifier = Modifier.padding(bottom = 8.dp)
+                                            )
 
-                                            repeat(vm.currentWorkout.value?.exercises?.size ?: 0) { index ->
+                                            repeat(
+                                                vm.currentWorkout.value?.exercises?.size ?: 0
+                                            ) { index ->
                                                 Row(
                                                     modifier = Modifier
                                                         .fillMaxWidth()
                                                         .padding(vertical = 4.dp),
                                                     horizontalArrangement = Arrangement.SpaceBetween
                                                 ) {
-                                                    val ex = vm.currentWorkout.value?.exercises?.getOrNull(index)
+                                                    val ex =
+                                                        vm.currentWorkout.value?.exercises?.getOrNull(
+                                                            index
+                                                        )
                                                     Label(ex?.title ?: "")
                                                     Label(
                                                         (ex?.reps + "x" + ex?.sets),
@@ -312,7 +319,11 @@ fun MainScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                             .height(232.dp)
                     ) {
                         Spacer(modifier = Modifier.height(12.dp))
-                        StatRow(vm.userStats.value?.totalWorkouts ?: 0, "Всего тренировок", "за все вермя")
+                        StatRow(
+                            vm.userStats.value?.totalWorkouts ?: 0,
+                            "Всего тренировок",
+                            "за все вермя"
+                        )
                         Spacer(modifier = Modifier.height(12.dp))
                         StatRow(
                             vm.userStats.value?.totalExercises ?: 0,
@@ -329,48 +340,49 @@ fun MainScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                         Spacer(modifier = Modifier.height(12.dp))
                     }
 
-                    Spacer(modifier = Modifier.height(28.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 24.dp),
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(50.dp)
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(colors.textPrimary)
-                                .clickable(
-                                    indication = null,
-                                    interactionSource = remember { MutableInteractionSource() }
-                                ) {
-                                    backStack.add(ChatRoute)
-                                },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                verticalAlignment = Alignment.CenterVertically
+
+                    }
+//
+                    Box(
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp, vertical = 16.dp)
+                            .fillMaxWidth()
+                            .height(50.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(colors.textPrimary)
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
                             ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.chat),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(20.dp),
-                                    tint = colors.special
-                                )
-                                Label("AI Помощник", color = colors.backgroundPrimary)
-                            }
+                                backStack.add(ChatRoute)
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.chat),
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp),
+                                tint = colors.special
+                            )
+                            Label("AI Помощник", color = colors.backgroundPrimary)
                         }
                     }
+
                 }
-
-
-                Spacer(modifier = Modifier.height(12.dp))
             }
 
-            Spacer(Modifier.weight(1f))
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -390,6 +402,7 @@ fun MainScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                     ),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
                 if (!isButtonExpanded) {
                     Box(
                         modifier = Modifier
@@ -403,6 +416,7 @@ fun MainScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                         Label("Подобрать тренировки")
                     }
                 }
+
 
                 AnimatedVisibility(
                     visible = isButtonExpanded,
@@ -484,8 +498,8 @@ fun MainScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                     }
                 }
             }
-            Spacer(Modifier.height(24.dp))
         }
+        Spacer(Modifier.height(24.dp))
     }
 }
 
