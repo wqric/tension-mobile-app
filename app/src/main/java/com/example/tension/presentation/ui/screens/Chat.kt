@@ -156,10 +156,7 @@ fun ChatScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                             modifier = Modifier
                                 .size(50.dp)
                                 .clip(RoundedCornerShape(12.dp))
-                                .background(
-                                    if (messageText.isNotBlank() && !isLoading) colors.special
-                                    else colors.backgroundSecondary
-                                )
+                                .background(colors.backgroundSecondary)
                                 .clickable(enabled = messageText.isNotBlank() && !isLoading) {
                                 },
                             contentAlignment = Alignment.Center
