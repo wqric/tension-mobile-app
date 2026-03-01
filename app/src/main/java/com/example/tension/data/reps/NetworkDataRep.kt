@@ -3,6 +3,7 @@ package com.example.tension.data.reps
 import com.example.tension.data.api.AiAPI
 import com.example.tension.data.api.API
 import com.example.tension.data.api.AgentCallRQ
+import com.example.tension.data.api.GenerateWorkoutsRQ
 import com.example.tension.data.api.LoginRQ
 import com.example.tension.data.api.RegistrationRQ
 import com.example.tension.data.api.UpdateProfileRQ
@@ -56,8 +57,12 @@ class NetworkDataRep(private val api: API, private val aiApi: AiAPI) {
         return safeCall { api.getUserWorkouts(token) }
     }
 
-    suspend fun generateWorkouts(token: String): Result<List<Workout>> {
-        return safeCall { api.generateWorkoutPlan(token) }
+    suspend fun generateWorkouts(token: String, month: Int, freq: Int): Result<List<Workout>> {
+        val req = GenerateWorkoutsRQ(
+            months = month,
+            freq = freq
+        )
+        return safeCall { api.generateWorkoutPlan(token, req) }
     }
 
 

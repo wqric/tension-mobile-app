@@ -1,5 +1,6 @@
 package com.example.tension.data.api
 
+import com.example.tension.presentation.models.Workout
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -30,13 +31,13 @@ data class MarkWorkoutDoneRQ(
     val workoutId: Int,
     val date: String
 )
+
 @Serializable
-data class WorkoutCompleteResponse(
-    val message: String,
-    val status: String? = null,
-    @SerialName("workout_id")
-    val workoutID: Int
+data class GenerateWorkoutsRQ(
+    val months: Int,
+    val freq: Int
 )
+
 @Serializable
 data class AgentCallRQ(
     val message: String,

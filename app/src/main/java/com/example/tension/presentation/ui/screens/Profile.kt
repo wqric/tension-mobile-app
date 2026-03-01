@@ -120,8 +120,6 @@ fun ProfileScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                 )
             }
             Spacer(Modifier.height(24.dp))
-
-            // Аватар и email
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally

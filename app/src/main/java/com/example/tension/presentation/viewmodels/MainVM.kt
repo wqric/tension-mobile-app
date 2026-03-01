@@ -32,6 +32,10 @@ class MainVM(private val useCase: CommonUseCase, private val aiUseCase: AiAgentU
     val userStats = mutableStateOf<UserStats?>(null)
     val userWorkouts = mutableStateOf<List<Workout>?>(null)
 
+    var months by mutableStateOf<Int?>(null)
+
+    var freq by mutableStateOf<Int?>(null)
+
     var isNewChat by mutableStateOf(true)
 
     val currentWorkout = derivedStateOf {
@@ -56,9 +60,21 @@ class MainVM(private val useCase: CommonUseCase, private val aiUseCase: AiAgentU
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
-    /**
-     * Отправка сообщения пользователем
-     */
+
+    fun generateWorkoutPlan() = viewModelScope.launch {
+        val workouts = useCase.generateWorkouts(months ?: 0, freq ?: 0)
+        workouts.fold(
+            onSuccess = {
+                userWorkouts.value = it
+                Log.d("user", it.toString())
+                getData()
+            },
+            onFailure = {
+                Log.d("er", it.toString())
+            }
+        )
+    }
+
     fun sendMessage(text: String) {
         if (text.isBlank()) return
         val userMsg = ChatUiMessage(text = text, isUser = true)

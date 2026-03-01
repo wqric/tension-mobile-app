@@ -30,7 +30,7 @@ class API(private val client: HttpClient) {
     }
 
 
-    // Создаьб аккаунт
+    // Создать аккаунт
     suspend fun register(req: RegistrationRQ): User {
         return client.post("$BASE_URL/register") {
             contentType(ContentType.Application.Json)
@@ -71,9 +71,11 @@ class API(private val client: HttpClient) {
     }
 
     // Сгенерировать новый план трениовок
-    suspend fun generateWorkoutPlan(token: String): List<Workout> {
+    suspend fun generateWorkoutPlan(token: String, req: GenerateWorkoutsRQ): List<Workout> {
         return client.post("$BASE_URL/api/workouts/generate") {
+            contentType(ContentType.Application.Json)
             bearerAuth(token)
+            setBody(req)
         }.body<List<Workout>>()
     }
 
