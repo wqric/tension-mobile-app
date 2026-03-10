@@ -57,6 +57,7 @@ import com.example.tension.R
 import com.example.tension.presentation.models.Workout
 import com.example.tension.presentation.ui.activities.ChatRoute
 import com.example.tension.presentation.ui.activities.ProfileRoute
+import com.example.tension.presentation.ui.activities.SettingsRoute
 import com.example.tension.presentation.ui.theme.Body
 import com.example.tension.presentation.ui.theme.Label
 import com.example.tension.presentation.ui.theme.LocalColors
@@ -154,7 +155,7 @@ fun MainScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                                         indication = null,
                                         interactionSource = remember { MutableInteractionSource() }
                                     ) {
-
+                                        backStack.add(SettingsRoute)
                                     }
                             )
                             Subtitle("Сегодня", modifier = Modifier.padding(12.dp))
@@ -290,10 +291,19 @@ fun MainScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Body("Все тренировки")
-                                    Label(
-                                        "${vm.userWorkouts.value?.size ?: 0} тренировок",
-                                        color = colors.textSecondary
+                                    if ((vm.userWorkouts.value?.size ?: 0) != 0) {
+                                        Body("Все тренировки")
+                                        Label(
+                                            "${vm.userWorkouts.value?.size ?: 0} тренировок",
+                                            color = colors.textSecondary
+                                        )
+                                    } else (
+                                            Box(
+                                                modifier = Modifier.fillMaxSize(),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                Subtitle("Тренировок нет")
+                                            }
                                     )
                                 }
 
@@ -332,11 +342,12 @@ fun MainScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                             ) {
                                 Row(
                                     horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                    verticalAlignment = Alignment.CenterVertically
+                                    verticalAlignment = Alignment.CenterVertically,
                                 ) {
                                     Label("Назад", color = colors.backgroundSecondary)
                                 }
                             }
+                            Spacer(modifier = Modifier.height(30.dp))
                         }
 
 
