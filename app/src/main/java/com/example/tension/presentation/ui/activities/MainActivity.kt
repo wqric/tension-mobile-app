@@ -16,6 +16,7 @@ import com.example.tension.presentation.ui.screens.LoginScreen
 import com.example.tension.presentation.ui.screens.MainScreen
 import com.example.tension.presentation.ui.screens.ProfileScreen
 import com.example.tension.presentation.ui.screens.RegScreen
+import com.example.tension.presentation.ui.screens.SettingsScreen
 import com.example.tension.presentation.ui.screens.SplashScreen
 import com.example.tension.presentation.ui.theme.Screen
 import com.example.tension.presentation.ui.theme.SetBarsColor
@@ -64,6 +65,9 @@ class MainActivity : ComponentActivity() {
                                 }
                                 is ProfileRoute -> NavEntry(key) {
                                     ProfileScreen(vm, backstack)
+                                }
+                                is SettingsRoute -> NavEntry(key) {
+                                    SettingsScreen(vm, backstack)
                                 }
                                 else -> error("")
                             }

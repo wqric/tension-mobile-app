@@ -10,19 +10,29 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.tension.R
 import com.example.tension.presentation.ui.activities.LoginRoute
 import com.example.tension.presentation.ui.activities.MainRoute
 import com.example.tension.presentation.ui.theme.Body
@@ -37,6 +47,7 @@ fun RegScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
     if (vm.user.value != null) {
         backStack.add(MainRoute)
     }
+    var passwordVisible by remember { mutableStateOf(false) }
     val colors = LocalColors.current
     Screen {
         Spacer(Modifier.height(80.dp))
@@ -101,6 +112,20 @@ fun RegScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                 focusedContainerColor = colors.backgroundSecondary
             ),
             singleLine = true,
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(
+                        painter = painterResource(
+                            if (passwordVisible) R.drawable.eye_off
+                            else R.drawable.eye_on
+                        ),
+                        contentDescription = if (passwordVisible) "Скрыть пароль" else "Показать пароль",
+                        modifier = Modifier.size(20.dp),
+                        tint = colors.textSecondary
+                    )
+                }
+            },
             placeholder = {
                 Label("**********", color = colors.textSecondary.copy(alpha = 0.25f))
             }
@@ -127,12 +152,23 @@ fun RegScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                 focusedBorderColor = Color.Transparent,
                 unfocusedBorderColor = Color.Transparent,
                 unfocusedContainerColor = colors.backgroundSecondary,
-                focusedContainerColor = colors.backgroundSecondary,
-                errorBorderColor = Color(0x1A672A2A),
-                errorContainerColor = Color(0x1A672A2A)
+                focusedContainerColor = colors.backgroundSecondary
             ),
             singleLine = true,
-            isError = vm.passwordRepeatState.value != vm.passwordState.value && vm.passwordState.value != "",
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(
+                        painter = painterResource(
+                            if (passwordVisible) R.drawable.eye_off
+                            else R.drawable.eye_on
+                        ),
+                        contentDescription = if (passwordVisible) "Скрыть пароль" else "Показать пароль",
+                        modifier = Modifier.size(20.dp),
+                        tint = colors.textSecondary
+                    )
+                }
+            },
             placeholder = {
                 Label("**********", color = colors.textSecondary.copy(alpha = 0.25f))
             }
