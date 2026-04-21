@@ -427,7 +427,7 @@ fun MainScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                         Spacer(modifier = Modifier.height(12.dp))
                         StatRow(
                             vm.userStats.value?.totalExercises ?: 0,
-                            "Упражнений выполнен",
+                            "Упражнений выполнено",
                             "за все тренировки"
                         )
                         Spacer(modifier = Modifier.height(12.dp))
@@ -533,7 +533,7 @@ fun MainScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                         animationSpec = tween(durationMillis = 400, easing = FastOutSlowInEasing)
                     )
                 ) {
-                    
+
 
                     Column(
                         modifier = Modifier

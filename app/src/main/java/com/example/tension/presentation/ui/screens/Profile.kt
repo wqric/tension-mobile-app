@@ -1,76 +1,46 @@
 package com.example.tension.presentation.ui.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.Dp
-import com.example.tension.R
-import com.example.tension.presentation.ui.theme.Label
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
-
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
-
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
+import com.example.tension.R
 import com.example.tension.presentation.ui.activities.LoginRoute
 import com.example.tension.presentation.ui.activities.MainRoute
-import com.example.tension.presentation.ui.theme.Body
-import com.example.tension.presentation.ui.theme.LocalColors
-import com.example.tension.presentation.ui.theme.Screen
-import com.example.tension.presentation.ui.theme.Subtitle
+import com.example.tension.presentation.ui.theme.*
 import com.example.tension.presentation.viewmodels.MainVM
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
     val colors = LocalColors.current
     var isEditing by remember { mutableStateOf(false) }
-    var isMenuExpanded by remember { mutableStateOf(false) }
 
-
-    // Состояния для редактирования
     var name by remember { mutableStateOf(vm.user.value?.name ?: "") }
-    var weight by remember { mutableStateOf(vm.user.value?.weight?.toString() ?: "") }
-    var height by remember { mutableStateOf(vm.user.value?.height?.toString() ?: "") }
+    var weight by remember {
+        mutableStateOf(vm.user.value?.weight?.let { if (it > 0) it.toString() else "" } ?: "")
+    }
+    var height by remember {
+        mutableStateOf(vm.user.value?.height?.let { if (it > 0) it.toString() else "" } ?: "")
+    }
     var aim by remember { mutableStateOf(vm.user.value?.aim ?: 0) }
     var difficult by remember { mutableStateOf(vm.user.value?.difficult ?: 0) }
 
@@ -94,32 +64,36 @@ fun ProfileScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                         .rotate(90f)
                         .clickable(
                             indication = null,
-                            interactionSource =  remember { MutableInteractionSource() }
+                            interactionSource = remember { MutableInteractionSource() }
                         ) {
                             backStack.add(MainRoute)
-                        }
+                        },
+                    tint = colors.textPrimary
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
                 Subtitle("Профиль")
                 Spacer(modifier = Modifier.weight(1f))
+
                 Icon(
                     painter = painterResource(R.drawable.logout),
                     contentDescription = null,
                     modifier = Modifier
                         .size(36.dp)
-                        .rotate(180f)
                         .clickable(
                             indication = null,
-                            interactionSource =  remember { MutableInteractionSource() }
+                            interactionSource = remember { MutableInteractionSource() }
                         ) {
                             vm.logout()
                             backStack.clear()
                             backStack.add(LoginRoute)
-                        }
+                        },
+                    tint = colors.textPrimary
                 )
             }
+
             Spacer(Modifier.height(24.dp))
+
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -139,13 +113,11 @@ fun ProfileScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                 }
 
                 Spacer(Modifier.height(16.dp))
-
-                Body(vm.user.value?.email ?: "")
+                Body(vm.user.value?.email ?: "", color = colors.textSecondary)
             }
 
             Spacer(Modifier.height(32.dp))
 
-            // Поля профиля
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -160,32 +132,39 @@ fun ProfileScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                     value = name,
                     isEditing = isEditing,
                     onValueChange = { name = it },
-                    keyboardType = KeyboardType.Text,
-                    enabled = !isMenuExpanded
+                    keyboardType = KeyboardType.Text
                 )
 
                 MyDivider(color = colors.backgroundPrimary, thickness = 1.dp)
 
-                // Вес
+                // Вес (валидация: цифры и одна точка)
                 ProfileField(
                     title = "Вес (кг)",
                     value = weight,
                     isEditing = isEditing,
-                    onValueChange = { weight = it },
-                    keyboardType = KeyboardType.Number,
-                    enabled = !isMenuExpanded
+                    placeholder = "0.0",
+                    keyboardType = KeyboardType.Decimal,
+                    onValueChange = { input ->
+                        if (input.all { it.isDigit() || it == '.' } && input.count { it == '.' } <= 1) {
+                            weight = input
+                        }
+                    }
                 )
 
                 MyDivider(color = colors.backgroundPrimary, thickness = 1.dp)
 
-                // Рост
+                // Рост (валидация: только цифры)
                 ProfileField(
                     title = "Рост (см)",
                     value = height,
                     isEditing = isEditing,
-                    onValueChange = { height = it },
+                    placeholder = "0",
                     keyboardType = KeyboardType.Number,
-                    enabled = !isMenuExpanded
+                    onValueChange = { input ->
+                        if (input.all { it.isDigit() }) {
+                            height = input
+                        }
+                    }
                 )
 
                 MyDivider(color = colors.backgroundPrimary, thickness = 1.dp)
@@ -213,13 +192,12 @@ fun ProfileScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
 
             Spacer(Modifier.weight(1f))
 
-            // Кнопки
+            // Кнопки управления
             if (isEditing) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    // Кнопка Отмена
                     Box(
                         modifier = Modifier
                             .weight(1f)
@@ -228,10 +206,10 @@ fun ProfileScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                             .background(colors.backgroundSecondary)
                             .clickable {
                                 isEditing = false
-                                // Сброс значений
+                                // Сброс к исходным значениям из VM
                                 name = vm.user.value?.name ?: ""
-                                weight = vm.user.value?.weight?.toString() ?: ""
-                                height = vm.user.value?.height?.toString() ?: ""
+                                weight = vm.user.value?.weight?.takeIf { it > 0 }?.toString() ?: ""
+                                height = vm.user.value?.height?.takeIf { it > 0 }?.toString() ?: ""
                                 aim = vm.user.value?.aim ?: 0
                                 difficult = vm.user.value?.difficult ?: 0
                             },
@@ -240,7 +218,6 @@ fun ProfileScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                         Label("Отмена")
                     }
 
-                    // Кнопка Сохранить
                     Box(
                         modifier = Modifier
                             .weight(1f)
@@ -263,19 +240,16 @@ fun ProfileScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                     }
                 }
             } else {
-                // Кнопка Изменить
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .background(colors.special)
-                        .clickable {
-                            isEditing = true
-                        },
+                        .clickable { isEditing = true },
                     contentAlignment = Alignment.Center
                 ) {
-                    Label("Изменить")
+                    Label("Изменить", color = colors.textPrimary)
                 }
             }
 
@@ -284,7 +258,6 @@ fun ProfileScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
     }
 }
 
-
 @Composable
 fun ProfileField(
     title: String,
@@ -292,7 +265,7 @@ fun ProfileField(
     isEditing: Boolean,
     onValueChange: (String) -> Unit,
     keyboardType: KeyboardType = KeyboardType.Text,
-    enabled: Boolean = true,
+    placeholder: String = ""
 ) {
     val colors = LocalColors.current
 
@@ -312,20 +285,36 @@ fun ProfileField(
                     color = colors.textPrimary,
                     textAlign = TextAlign.End
                 ),
-                enabled = enabled,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = keyboardType,
-                    imeAction = androidx.compose.ui.text.input.ImeAction.Done
+                    imeAction = ImeAction.Done
                 ),
                 singleLine = true,
                 modifier = Modifier
                     .width(150.dp)
                     .clip(RoundedCornerShape(8.dp))
                     .background(colors.backgroundPrimary)
-                    .padding(horizontal = 12.dp, vertical = 8.dp)
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                decorationBox = { innerTextField ->
+                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
+                        if (value.isEmpty()) {
+                            Text(
+                                text = placeholder,
+                                color = colors.textSecondary.copy(alpha = 0.3f),
+                                textAlign = TextAlign.End
+                            )
+                        }
+                        innerTextField()
+                    }
+                }
             )
         } else {
-            Label(value, color = colors.textSecondary)
+            // Логика "Не указано"
+            val isUnspecified = value.isEmpty() || value == "0" || value == "0.0"
+            val displayText = if (isUnspecified) "Не указано" else value
+            val displayColor = if (isUnspecified) colors.textSecondary.copy(alpha = 0.4f) else colors.textSecondary
+
+            Label(displayText, color = displayColor)
         }
     }
 }
@@ -354,7 +343,7 @@ fun ProfileDropdownField(
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
                         .background(colors.backgroundPrimary)
-                        .clickable { expanded = true  }
+                        .clickable { expanded = true }
                         .padding(horizontal = 12.dp, vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -363,14 +352,15 @@ fun ProfileDropdownField(
                     Icon(
                         painter = painterResource(R.drawable.arrow_down),
                         contentDescription = null,
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier.size(16.dp),
+                        tint = colors.textPrimary
                     )
                 }
 
                 DropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
-                    properties = PopupProperties(focusable = false),
+                    properties = PopupProperties(focusable = true),
                     modifier = Modifier.background(colors.backgroundSecondary)
                 ) {
                     options.forEachIndexed { index, option ->
@@ -385,7 +375,7 @@ fun ProfileDropdownField(
                 }
             }
         } else {
-            Label(options.getOrNull(selectedIndex) ?: "", color = colors.textSecondary)
+            Label(options.getOrNull(selectedIndex) ?: "Не указано", color = colors.textSecondary)
         }
     }
 }
