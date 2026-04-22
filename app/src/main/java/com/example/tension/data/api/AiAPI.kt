@@ -16,7 +16,8 @@ class AiAPI(private val client: HttpClient) {
 
     companion object {
         const val BASE_URL = "https://agent.timeweb.cloud/api/v1/cloud-ai/agents"
-        const val AGENT_ID = "23aa5106-6088-4280-bd87-297ec45867d8"
+        const val AGENT_ID = "e0335005-3525-447e-992d-49fe41436cbe"
+
     }
 
 

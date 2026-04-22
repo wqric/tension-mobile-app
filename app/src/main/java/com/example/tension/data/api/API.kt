@@ -18,7 +18,7 @@ import org.koin.core.annotation.Single
 @Single
 class API(private val client: HttpClient) {
     companion object {
-        const val BASE_URL = "http://85.198.83.158:8080"
+        const val BASE_URL = "http://72.56.235.159:8080"
     }
 
     // Войти в аккаунт

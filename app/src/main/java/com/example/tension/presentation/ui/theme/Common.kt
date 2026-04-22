@@ -1,5 +1,7 @@
 package com.example.tension.presentation.ui.theme
 
+import android.os.Build
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
@@ -14,6 +16,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -111,5 +114,28 @@ fun Screen(modifier: Modifier = Modifier, body: @Composable ColumnScope.() -> Un
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         body()
+    }
+}
+
+@Composable
+fun SetStatusBarColor(color: Color) {
+    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+        val activity = LocalActivity.current
+        activity?.let {
+            it.window.statusBarColor = color.toArgb()
+        }
+    }
+}
+
+@Composable
+fun SetNavBarColor(color: Color) {
+    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+        val activity = LocalActivity.current
+
+        SideEffect {
+            activity?.let {
+                it.window.navigationBarColor = color.toArgb()
+            }
+        }
     }
 }

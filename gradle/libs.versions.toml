@@ -20,6 +20,7 @@ ktorVersion = "3.4.0"
 kotlinxSerializationJson = "1.10.0"
 playServicesBase = "18.10.0"
 foundation = "1.10.3"
+runtime = "1.10.6"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -63,6 +64,7 @@ androidx-navigation3-ui = { group = "androidx.navigation3", name = "navigation3-
 material = { module = "com.google.android.material:material", version.ref = "material" }
 play-services-base = { group = "com.google.android.gms", name = "play-services-base", version.ref = "playServicesBase" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
+androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

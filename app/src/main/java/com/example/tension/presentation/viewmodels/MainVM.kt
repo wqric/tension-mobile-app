@@ -76,6 +76,7 @@ class MainVM(private val useCase: CommonUseCase, private val aiUseCase: AiAgentU
     }
 
     fun sendMessage(text: String) {
+        Log.d("ai", "start")
         if (text.isBlank()) return
         val userMsg = ChatUiMessage(text = text, isUser = true)
         _messages.update { it + userMsg }
@@ -85,13 +86,16 @@ class MainVM(private val useCase: CommonUseCase, private val aiUseCase: AiAgentU
 
             result.onSuccess { botAnswer ->
                 val botMsg = ChatUiMessage(text = botAnswer, isUser = false)
+                Log.d("ai", botAnswer)
                 _messages.update { it + botMsg }
             }.onFailure { error ->
+                Log.d("ai", error.message.toString())
                 emailState.value = error.message ?: "Неизвестная ошибка"
             }
 
             _isLoading.value = false
         }
+        Log.d("ai", "end")
     }
 
     fun clearChat() = viewModelScope.launch {

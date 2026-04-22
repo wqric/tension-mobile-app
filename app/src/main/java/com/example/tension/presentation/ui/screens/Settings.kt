@@ -27,6 +27,7 @@ import com.example.tension.presentation.ui.theme.Body
 import com.example.tension.presentation.ui.theme.Label
 import com.example.tension.presentation.ui.theme.LocalColors
 import com.example.tension.presentation.ui.theme.Screen
+import com.example.tension.presentation.ui.theme.SetStatusBarColor
 import com.example.tension.presentation.ui.theme.Subtitle
 import com.example.tension.presentation.viewmodels.MainVM
 
@@ -34,9 +35,8 @@ import com.example.tension.presentation.viewmodels.MainVM
 fun SettingsScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
     val colors = LocalColors.current
     var notificationsEnabled by remember { mutableStateOf(true) }
-    var darkMode by remember { mutableStateOf(false) }
     var soundEnabled by remember { mutableStateOf(true) }
-
+    SetStatusBarColor(colors.backgroundPrimary)
     Screen {
         Column(
             modifier = Modifier

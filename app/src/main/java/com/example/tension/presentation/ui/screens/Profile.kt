@@ -55,6 +55,7 @@ import com.example.tension.presentation.ui.activities.MainRoute
 import com.example.tension.presentation.ui.theme.Body
 import com.example.tension.presentation.ui.theme.LocalColors
 import com.example.tension.presentation.ui.theme.Screen
+import com.example.tension.presentation.ui.theme.SetStatusBarColor
 import com.example.tension.presentation.ui.theme.Subtitle
 import com.example.tension.presentation.viewmodels.MainVM
 import kotlinx.coroutines.delay
@@ -66,8 +67,6 @@ fun ProfileScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
     var isEditing by remember { mutableStateOf(false) }
     var isMenuExpanded by remember { mutableStateOf(false) }
 
-
-    // Состояния для редактирования
     var name by remember { mutableStateOf(vm.user.value?.name ?: "") }
     var weight by remember { mutableStateOf(vm.user.value?.weight?.toString() ?: "") }
     var height by remember { mutableStateOf(vm.user.value?.height?.toString() ?: "") }
@@ -75,6 +74,7 @@ fun ProfileScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
     var difficult by remember { mutableStateOf(vm.user.value?.difficult ?: 0) }
 
     Screen {
+        SetStatusBarColor(colors.backgroundPrimary)
         Spacer(modifier = Modifier.height(40.dp))
         Column(
             modifier = Modifier

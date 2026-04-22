@@ -1,5 +1,7 @@
 package com.example.tension.presentation.ui.screens
 
+import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -39,6 +41,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,11 +53,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.view.WindowCompat
 import com.example.tension.R
 import com.example.tension.presentation.models.Workout
 import com.example.tension.presentation.ui.activities.ChatRoute
@@ -62,6 +70,8 @@ import com.example.tension.presentation.ui.theme.Body
 import com.example.tension.presentation.ui.theme.Label
 import com.example.tension.presentation.ui.theme.LocalColors
 import com.example.tension.presentation.ui.theme.Screen
+import com.example.tension.presentation.ui.theme.SetNavBarColor
+import com.example.tension.presentation.ui.theme.SetStatusBarColor
 import com.example.tension.presentation.ui.theme.Subtitle
 import com.example.tension.presentation.viewmodels.MainVM
 import java.time.LocalDate
@@ -77,6 +87,10 @@ fun MainScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
     val colors = LocalColors.current
 
     Screen {
+        SetNavBarColor(
+            if (isButtonExpanded) colors.special else colors.backgroundPrimary
+        )
+        SetStatusBarColor(colors.special)
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -101,7 +115,7 @@ fun MainScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                 targetValue = when {
                     isWorkoutsExpanded -> 1000.dp
                     isExpanded -> 700.dp
-                    else -> 350.dp
+                    else -> 300.dp
                 },
                 animationSpec = tween(
                     durationMillis = 500,
@@ -110,7 +124,7 @@ fun MainScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
             )
 
             val topSpacerHeight by animateDpAsState(
-                targetValue = if (isExpanded || isWorkoutsExpanded) 50.dp else 80.dp,
+                targetValue = if (isExpanded || isWorkoutsExpanded) 40.dp else 60.dp,
                 animationSpec = tween(
                     durationMillis = 500,
                     easing = FastOutSlowInEasing
@@ -294,7 +308,7 @@ fun MainScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                                     if ((vm.userWorkouts.value?.size ?: 0) != 0) {
                                         Body("Все тренировки")
                                         Label(
-                                            "${vm.userWorkouts.value?.size ?: 0} тренировок",
+                                            "${vm.userWorkouts.value?.size ?: 0}",
                                             color = colors.textSecondary
                                         )
                                     } else (
@@ -533,8 +547,6 @@ fun MainScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                         animationSpec = tween(durationMillis = 400, easing = FastOutSlowInEasing)
                     )
                 ) {
-                    
-
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -545,10 +557,7 @@ fun MainScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
 
                         Subtitle("Подбор тренировок", modifier = Modifier.padding(bottom = 16.dp))
 
-                        Body("Настройте план тренировок:")
                         Spacer(Modifier.height(24.dp))
-
-                        // Частота в неделю
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -888,6 +897,7 @@ fun WorkoutListItem(
         }
     }
 }
+
 
 
 

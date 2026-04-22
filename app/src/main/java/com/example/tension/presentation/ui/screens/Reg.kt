@@ -39,6 +39,7 @@ import com.example.tension.presentation.ui.theme.Body
 import com.example.tension.presentation.ui.theme.Label
 import com.example.tension.presentation.ui.theme.LocalColors
 import com.example.tension.presentation.ui.theme.Screen
+import com.example.tension.presentation.ui.theme.SetStatusBarColor
 import com.example.tension.presentation.ui.theme.Subtitle
 import com.example.tension.presentation.viewmodels.MainVM
 
@@ -49,16 +50,17 @@ fun RegScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
     }
     var passwordVisible by remember { mutableStateOf(false) }
     val colors = LocalColors.current
+    SetStatusBarColor(colors.backgroundPrimary)
     Screen {
-        Spacer(Modifier.height(80.dp))
+        Spacer(Modifier.height(50.dp))
         if (vm.errorState.value != "") {
             Toast.makeText(LocalContext.current, vm.errorState.value, Toast.LENGTH_SHORT).show()
             vm.errorState.value = ""
         }
-        Subtitle("Добро пожаловать!")
+        Subtitle("Приветствуем!")
         Spacer(Modifier.height(10.dp))
         Body("Введите ваши данные", color = colors.textSecondary)
-        Spacer(Modifier.height(100.dp))
+        Spacer(Modifier.weight(1f))
         Label(
             "Email",
             align = TextAlign.Start,
@@ -87,7 +89,7 @@ fun RegScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                 Label("test@example.com", color = colors.textSecondary.copy(alpha = 0.25f))
             }
         )
-        Spacer(Modifier.height(30.dp))
+        Spacer(Modifier.height(20.dp))
         Label(
             "Пароль",
             align = TextAlign.Start,
@@ -130,7 +132,7 @@ fun RegScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                 Label("**********", color = colors.textSecondary.copy(alpha = 0.25f))
             }
         )
-        Spacer(Modifier.height(30.dp))
+        Spacer(Modifier.height(20.dp))
         Label(
             "Повтор пароля",
             align = TextAlign.Start,

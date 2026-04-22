@@ -34,6 +34,7 @@ import com.example.tension.presentation.ui.theme.Body
 import com.example.tension.presentation.ui.theme.Label
 import com.example.tension.presentation.ui.theme.LocalColors
 import com.example.tension.presentation.ui.theme.Screen
+import com.example.tension.presentation.ui.theme.SetStatusBarColor
 import com.example.tension.presentation.viewmodels.MainVM
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -49,7 +50,7 @@ fun ChatScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
     var messageText by remember { mutableStateOf("") }
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
-
+    SetStatusBarColor(colors.backgroundPrimary)
     LaunchedEffect(messages.size) {
         if (messages.isNotEmpty()) {
             coroutineScope.launch {

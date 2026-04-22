@@ -40,6 +40,7 @@ import com.example.tension.presentation.ui.theme.Body
 import com.example.tension.presentation.ui.theme.Label
 import com.example.tension.presentation.ui.theme.LocalColors
 import com.example.tension.presentation.ui.theme.Screen
+import com.example.tension.presentation.ui.theme.SetStatusBarColor
 import com.example.tension.presentation.ui.theme.Subtitle
 import com.example.tension.presentation.viewmodels.MainVM
 
@@ -50,8 +51,9 @@ fun LoginScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
     }
     var passwordVisible by remember { mutableStateOf(false) }
     val colors = LocalColors.current
+    SetStatusBarColor(colors.backgroundPrimary)
     Screen {
-        Spacer(Modifier.height(80.dp))
+        Spacer(Modifier.height(70.dp))
         if (vm.errorState.value != "") {
             Toast.makeText(LocalContext.current, vm.errorState.value, Toast.LENGTH_SHORT).show()
             vm.errorState.value = ""
@@ -88,7 +90,7 @@ fun LoginScreen(vm: MainVM, backStack: SnapshotStateList<Any>) {
                 Label("test@example.com", color = colors.textSecondary.copy(alpha = 0.25f))
             }
         )
-        Spacer(Modifier.height(30.dp))
+        Spacer(Modifier.height(20.dp))
         Label(
             "Пароль",
             align = TextAlign.Start,
